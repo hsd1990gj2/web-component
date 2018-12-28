@@ -22,6 +22,9 @@
 
 //慕课webpack
 
+//导入字体图标
+import "./style/iconfont.css"
+
 //导入jquery
 import $ from 'jquery'
 window.$ = $;

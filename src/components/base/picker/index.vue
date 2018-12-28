@@ -79,11 +79,11 @@ export default {
 		  //把这个新的实例添加到body元素节点中成为其子节点，但是放在body的现有子节点的最后
 			document.body.appendChild(this.$el);
 	},
-	// watch: {
-	// 	visible(v) {
-	// 		this.$emit("visible", v);
-	// 	}
-	// }
+	watch: {
+		visible(v) {
+			this.$emit("visible", v);
+		}
+	}
 };
 </script>
 <style lang="scss">

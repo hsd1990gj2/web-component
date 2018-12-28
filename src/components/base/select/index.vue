@@ -20,54 +20,29 @@
 		<!--</select-picker>-->
 	<!--</div>-->
 
-  <div ref="reference" :class="['xui-select']" :style="'min-width:'+cpickerWidth+'px'">
-
-    <!--<div class="xui-select-inputwrap" tabindex="0" @keydown.stop.prevent="keydown" @click="toggleDropdown">-->
-      <!--<div class="xui-single-text" v-if="!cmultiple" v-show="notEmpty&&!searching" v-html="text(widgetValue)"></div>-->
-      <!--<div class="xui-select-placeholder" v-show="!notEmpty&&!searching">{{cplaceholder}}</div>-->
-      <!--<i v-if="cclearable&&notEmpty" class="select-clear-icon xui-icon xui-icon-delete_fill" @click.stop="clear"></i>-->
-      <!--<i :class="['select-trigger-icon xui-icon xui-icon-unfold',showDropdown?'active':'']"></i>-->
-    <!--</div>-->
-
-
+  <!--1.先渲染一个input框，初始没有值的时候显示提示，然后点击下拉事件，渲染出来一个下来框组件。-->
+  <!--2.下拉组件渲染预制好的选项值展示列表，选择某一项时映射值给input框，并标记选中样式。-->
+  <!--3.input框根据选中值对比映射出具体的显示文本名称-->
+  <!--4.根据select-picker抛出的事件，监听显示下拉箭头的样式-->
+  <div ref="reference" :class="['xui-select xui-select-style',cdisabled?'disabled':'',cclearable&&notEmpty?'clearable':'']" :style="'min-width:'+cpickerWidth+'px'">
     <div class="xui-select-inputwrap" @click.stop="toggleDropdown">
       <div v-show="notEmpty" v-html="text(widgetValue)"></div>
       <div class="xui-select-placeholder" v-show="!notEmpty">{{cplaceholder}}</div>
-      <!--<i v-if="cclearable&&notEmpty" class="select-clear-icon xui-icon xui-icon-delete_fill" @click.stop="clear"></i>-->
-      <!--<i :class="['select-trigger-icon xui-icon xui-icon-unfold',showDropdown?'active':'']"></i>-->
+      <i v-if="cclearable&&notEmpty" :class="['iconfont icon-close','select-clear-icon']" @click.stop="clear"></i>
+      <i :class="['iconfont icon-down','select-trigger-icon',showDropdown?'active':'']"></i>
     </div>
-
-
-    <!--<input    @keydown.stop="keydown"  @input="filterMethod" >-->
-    <!--<input v-if="filterable" ref="search" class="xui-select-search" :style="'min-width:'+cpickerWidth+'px'" type="text" :placeholder=cplaceholder v-model="searchKeyword" @click.stop="toggleDropdown(true)"/>-->
-
-
-    <!--<select-picker ref="picker" :class="['xui-select-picker',cmultiple?'multiple':'',cdisabled?'disabled':'',notEmpty?'not-empty':'',cclearable?'cclearable':'']" @visible="pickerVisible">-->
-      <!--<ul ref="dropdown" class="xui-select-dropdown" :style="'min-width:'+pickerWidth+'px'">-->
-      <!--<li ref="options" :class="['xui-select-option',notEmpty&&(item.value===widgetValue||widgetValue.indexOf(item.value)>=0)?'active':'',disabledOptions(item)?'disabled':'',hoverSelectItem==item?'hover':'']" v-for="(item,index) in filterItems||items" :key="index" v-html="item.text" @click.stop="selectItem(item.value,item)"></li>-->
-      <!--</ul>-->
-    <!--</select-picker>-->
-
-    <select-picker ref="picker" :class="['xui-select-picker']">
+    <select-picker ref="picker" :class="['xui-select-picker']"  @visible="pickerVisible">
       <ul ref="dropdown" class="xui-select-dropdown" :style="'min-width:'+cpickerWidth+'px'">
-        <li v-for="(item,index) in filterItems||items" :key="index" v-html="item.text" @click.stop="selectItem(item.value,item)"
-            :class="['xui-select-option',widgetValue==item.value?'active':'',cdisabled?'disabled':'']">
+        <li v-for="(item,index) in items" :key="index" v-html="item.text" @click.stop="selectItem(item.value,item)"
+            :class="['xui-select-option',widgetValue==item.value?'active':'',item.disabled?'disabled':'']">
         </li>
-        <!--<li ref="options" :class="['xui-select-option',notEmpty&&(item.value===widgetValue||widgetValue.indexOf(item.value)>=0)?'active':'',hoverSelectItem==item?'hover':'']"
-          ></li>-->
       </ul>
     </select-picker>
-
-
-
   </div>
 
 </template>
 <script>
-// import Sunset from "../../../common/sunset";
-// import Utils from "../../Helper.js";
 import selectPicker from "../picker/index.vue";
-
 export default {
 	components: {
 		selectPicker
@@ -81,21 +56,21 @@ export default {
 			type: Object
 		},
 		value: {},
+    placeholder: {},
 		disabled: {},
-		multiple: {},
-		placeholder: {}
+    clearable: {},
+		multiple: {}
 	},
 	data() {
 		return {
 			// groupable: false,
-			// showDropdown: false,
+			showDropdown: false,  //是否展示下来图标
       widgetValue: undefined,
 			// originItems: [],
 			items: [],
-			filterItems: null,
+			// filterItems: null,
 			// lock: false,
-			searchKeyword: "",
-			// hoverSelectItem: null,
+			// searchKeyword: "",
 			pickerWidth: 200
 		};
 	},
@@ -109,31 +84,28 @@ export default {
 		cplaceholder() {
 			return this.placeholder || this.safeOptions.placeholder || "请选择";
 		},
-		// cclearable() {
-		// 	return this.safeOptions.clearable !== false;
-		// },
-		cmultiple() {
-			return this.multiple || this.safeOptions.multiple;
-		},
     cpickerWidth(){
       return this.safeOptions.width || this.pickerWidth;
     },
-		// csize() {
-		// 	return this.size || this.safeOptions.size;
-		// },
+    notEmpty() {
+      var widgetValue = this.widgetValue;
+      if (widgetValue === undefined || widgetValue === null) {
+        return false;
+      }
+      return true;
+    },
+		cclearable() {
+			return this.clearable === true || this.safeOptions.clearable == true;
+		},
+		cmultiple() {
+			return this.multiple || this.safeOptions.multiple;
+		},
 		// spliter() {
 		// 	return this.safeOptions.spliter || ",";
 		// },
 		// filterable() {
 		// 	return this.safeOptions.filter;
 		// },
-		notEmpty() {
-			var widgetValue = this.widgetValue;
-			if (widgetValue === undefined || widgetValue === null) {
-				return false;
-			}
-			return true;
-		},
 		// widgetValue: {
 		// 	set(v) {
 		// 		var value;
@@ -174,10 +146,7 @@ export default {
 	},
 	methods: {
 		init() {
-
       this.items = this.options.data;
-
-
 			this.$nextTick(() => {
 				// Utils.generateItems(this.options).then(items => {
 				// 	var groups = {},
@@ -220,6 +189,10 @@ export default {
 
 			// var visible = this.$refs.picker.toggle();
 
+      if (this.cdisabled) {
+        return;
+      }
+
       this.$refs.picker.toggle();
 
 
@@ -229,7 +202,6 @@ export default {
 			// 		this.searching = true;
 			// 	}
       // if (!this.cmultiple) {
-      //   this.hoverSelectItem = this.getItemByValue(this.widgetValue);
       //   this.$nextTick(() => {
       //     this.activeSearchResultItem();
       //   });
@@ -238,7 +210,6 @@ export default {
 			// } else {
 			// 	this.searching = false;
 			// 	this.searchKeyword = "";
-			// 	this.hoverSelectItem = null;
 			// 	this.filterMethod();
 			// }
 		},
@@ -254,18 +225,13 @@ export default {
 			var items = this.items.filter(item => item.value === v);
 			return items.length ? items[0] : null;
 		},
-		selectItem(value, item, fromRemove) {
-			if (this.cdisabled) {
+		selectItem(value, item) {
+			if (item.disabled) {
 				return;
 			}
 			// if (!item) {
 			// 	item = this.getItemByValue(value);
 			// }
-			// var isDisabled = this.disabledOptions(item);
-			// if (isDisabled && !fromRemove) {
-			// 	return;
-			// }
-
 
       if(!this.cmultiple){  //不是多选
         this.widgetValue = value;
@@ -287,104 +253,12 @@ export default {
 			// 	this.widgetValue = this.widgetValue.slice(0);
 			// }
 		},
-		// clear() {
-		// 	this.widgetValue = void 0;
-		// },
-		disabledOptions(item) {
-			return Sunset.isFunction(this.options.disabledOptions) ? this.options.disabledOptions(item) : false;
+		clear() {
+			this.widgetValue = undefined;
 		},
-		// pickerVisible(v){
-		// 	this.showDropdown = v;
-		// },
-		// /********  过滤 *********/
-		// filterMethod() {
-		// 	var v = this.searchKeyword.toLowerCase();
-		// 	if (v == "" || v == void 0) {
-		// 		this.filterItems = null;
-		// 		return;
-		// 	}
-		// 	var filterMethod = Sunset.isFunction(this.options && this.options.filter)
-		// 		? this.options.filter
-		// 		: function(item, v) {
-		// 				return (
-		// 					(item.text + "").toLowerCase().indexOf(v) >= 0 ||
-		// 					(item.value + "").toLowerCase().indexOf(v) >= 0 ||
-		// 					(item.keywords && (item.keywords + "").toLowerCase().indexOf(v) >= 0)
-		// 				);
-		// 		  };
-		// 	var filterItems = this.items.filter(item => {
-		// 		return filterMethod(item, v);
-		// 	});
-		// 	this.filterItems = filterItems;
-		// },
-		// /********  键盘选择 *********/
-		// keydown(ev) {
-		// 	var widgetValue = this.widgetValue;
-		// 	switch (ev.keyCode) {
-		// 		case 38:
-		// 			this.activeSearchResultItem(-1);
-		// 			break;
-		// 		case 40:
-		// 			this.activeSearchResultItem(1);
-		// 			break;
-		// 		case 13:
-		// 			if (this.hoverSelectItem != null) {
-		// 				this.selectItem(this.hoverSelectItem.value, this.hoverSelectItem);
-		// 			}
-		// 			break;
-		// 		case 8:
-		// 			if (this.searchKeyword === "") {
-		// 				if (this.cmultiple && this.widgetValue.length) {
-		// 					this.widgetValue = this.widgetValue.slice(0, this.widgetValue.length - 1);
-		// 				}
-		// 			}
-		// 			this.hoverSelectItem = null;
-		// 			break;
-		// 	}
-		// },
-		// activeSearchResultItem(which) {
-		// 	var list = this.filterItems || this.items,
-		// 		current = this.hoverSelectItem,
-		// 		length = list.length;
-		// 	if (which) {
-		// 		var index = list.indexOf(current);
-		// 		index += which;
-		// 		if (index < 0) {
-		// 			index += length;
-		// 		}
-		// 		index %= length;
-		// 		current = list[index];
-		// 		var i = 0;
-		// 		while (this.disabledOptions(current)) {
-		// 			index += which;
-		// 			if (index < 0) {
-		// 				index += length;
-		// 			}
-		// 			index %= length;
-		// 			current = list[index];
-		// 			i++;
-		// 			if (i - 1 >= list.length) {
-		// 				break;
-		// 			}
-		// 		}
-		// 	}
-		// 	this.hoverSelectItem = current;
-		// 	setTimeout(() => {
-		// 		var $dropdown = this.$refs.dropdown;
-		// 		var $wrap = $dropdown.parentNode.parentNode;
-		// 		var $activer = this.$refs.options.filter(item => item.className.indexOf("hover") >= 0)[0];
-		// 		var activeIndex = this.$refs.options.indexOf($activer);
-		// 		if ($activer) {
-		// 			var height = $activer.clientHeight;
-		// 			var diff = (activeIndex + 1) * height - $wrap.clientHeight;
-		// 			if (diff > 0) {
-		// 				$wrap.scrollTop = diff;
-		// 			} else {
-		// 				$wrap.scrollTop = 0;
-		// 			}
-		// 		}
-		// 	}, 0);
-		// }
+		pickerVisible(v){
+			this.showDropdown = v;
+		}
 	},
 	mounted() {
 		this.init();
@@ -473,14 +347,14 @@ export default {
 		position: absolute;
 		right: 3px;
 		top: 0px;
-		font-size: 20px;
 		color: lighten($color-subcolor, 25%);
 		cursor: pointer;
 		&:hover {
 			color: $color-subcolor;
 		}
 	}
-	&.not-empty.cclearable:not(.disabled) {
+	/*&.not-empty.cclearable:not(.disabled) {*/
+	&.clearable{
 		&:hover {
 			.select-clear-icon {
 				display: block;
@@ -533,8 +407,7 @@ export default {
 			background: darken($color-background, 2%);
 		}
 		&.active {
-			background: $color-primary;
-			color: #fff;
+			color: $color-primary;
 		}
 		&.disabled {
 			color: $color-disabled;

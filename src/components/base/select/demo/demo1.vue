@@ -10,6 +10,7 @@
     <!--</div>-->
 
     <np-select v-model="v" :options="options"></np-select>
+
     <!--测试-->
     <!--测试一-->
 
@@ -28,14 +29,12 @@
         // v2: "",
         options: {
           // width: 400, //可配置输入框和下拉框的宽度
-          // multiple: false,
-          // clearable: true,
-          disabled: false,
-          // filter: true,
           placeholder: "请选择一个城市",
-          // disabledOptions(item) {
-          //   return item.value == "3";
-          // },
+          disabled: false, //支持整体禁用
+          clearable: true, //支持可清空
+          // multiple: false,
+
+
           // format(item) {
           //   return item.value + "-" + item.text;
           // },
@@ -51,7 +50,8 @@
             },
             {
               text: "广州",
-              value: 3
+              value: 3,
+              disabled:true //某一项禁用
             },
             {
               text: "深圳",
