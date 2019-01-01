@@ -31,7 +31,7 @@
     <radio-demo></radio-demo>
     <checkbox-demo></checkbox-demo>
     <select-demo></select-demo>
-
+    <textarea-demo></textarea-demo>
   </div>
 </template>
 
@@ -41,6 +41,7 @@
   import radioDemo from './components/base/radio/demo/demo1.vue'
   import checkboxDemo from './components/base/checkbox/demo/demo1.vue'
   import selectDemo from './components/base/select/demo/demo1.vue'
+  import textareaDemo from './components/base/textarea/demo/demo1.vue'
   // import demoOne from './web-component/src/components/composite/form/demo/demo1.vue'
 
   export default {
@@ -50,7 +51,8 @@
       inputDemo,
       radioDemo,
       checkboxDemo,
-      selectDemo
+      selectDemo,
+      textareaDemo
     }
   }
 </script>
