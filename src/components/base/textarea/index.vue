@@ -8,7 +8,7 @@
 	<!--</div>-->
 
   <div  class="xui-textarea xui-textarea-style">
-    <textarea v-model="widgetValue" :placeholder="cplaceholder"></textarea>
+    <textarea v-model="widgetValue" :placeholder="cplaceholder" :maxlength="cmaxlength"></textarea>
 
   </div>
 </template>
@@ -29,7 +29,7 @@ export default {
 		},
 		placeholder: {},
 		// readonly: {},
-		// maxlength: {},
+		maxlength: {},
 		value: {}
 	},
 	data() {
@@ -38,9 +38,9 @@ export default {
 		};
 	},
 	computed: {
-		// safeOptions() {
-		// 	return this.options || {};
-		// },
+		safeOptions() {
+			return this.options || {};
+		},
 		// inputlength() {
 		// 	return (this.value && this.value.length) || 0;
 		// },
@@ -51,18 +51,11 @@ export default {
 		// 	return this.disabled || this.options.disabled;
 		// },
 		cplaceholder() {
-			return this.placeholder || this.options.placeholder;
+			return this.placeholder || this.safeOptions.placeholder;
 		},
-		// cmaxlength() {
-		// 	return (
-		// 		this.maxlength ||
-		// 		this.safeOptions.maxlength ||
-		// 		(this.options.validate &&
-		// 			(Sunset.isNumber(this.options.validate.maxlength)
-		// 				? this.options.validate.maxlength
-		// 				: this.options.validate.maxlength && this.options.validate.maxlength.rule))
-		// 	);
-		// }
+		cmaxlength() {
+			return this.maxlength || this.safeOptions.maxlength;
+		}
 	},
 	methods: {
 		// clear() {

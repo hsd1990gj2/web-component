@@ -26,9 +26,9 @@ export default {
 			v: "",
 			options: {
 			  // placeholder: '请输入内容'
-				// disabled: false,
+        maxlength: 20,
+				// disabled: true,
 				// rows: 8,
-				// maxlength: 20,
 				// lengthTip: true
 			}
 		};
