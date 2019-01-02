@@ -1,24 +1,14 @@
 <template>
-	<!--<div class="xui-textarea xui-textarea-style">-->
-		<!--<textarea v-model="widgetValue" :maxlength="cmaxlength" :disabled="cdisabled" :readonly="creadonly" :placeholder="cplaceholder" :rows="safeOptions.rows||3" :autosize="safeOptions.autosize" :style="options.style">-->
-		<!--</textarea>-->
-		<!--<div v-if="cmaxlength&&options.lengthTip" style="padding:2px;font-size:14px;color:#ababab;text-align:right;">-->
-			<!--{{inputlength}}&nbsp;/&nbsp;{{cmaxlength}}-->
-		<!--</div>-->
-	<!--</div>-->
-
-  <div  class="xui-textarea xui-textarea-style">
-    <textarea v-model="widgetValue" :placeholder="cplaceholder" :maxlength="cmaxlength"></textarea>
-
+  <div  class="xui-textarea xui-textarea-style" :style="options.style">
+    <textarea v-model="widgetValue" :placeholder="cplaceholder" :maxlength="cmaxlength" :disabled="cdisabled" :readonly="creadonly" :rows="safeOptions.rows"
+              :class="[cdisabled?'disabled':'']"></textarea>
+    <div v-if="cmaxlength&&options.lengthTip" style="padding:2px;font-size:14px;color:#ababab;text-align:right;">
+        {{inputlength}}&nbsp;/&nbsp;{{cmaxlength}}
+    </div>
   </div>
 </template>
 <script>
-// import { Input } from "element-ui";
-
 export default {
-	components: {
-		// elementInput: Input
-	},
 	model: {
 		prop: "value",
 		event: "change"
@@ -28,8 +18,9 @@ export default {
 			type: Object
 		},
 		placeholder: {},
-		// readonly: {},
-		maxlength: {},
+    maxlength: {},
+    disabled: {},
+		readonly: {},
 		value: {}
 	},
 	data() {
@@ -41,15 +32,15 @@ export default {
 		safeOptions() {
 			return this.options || {};
 		},
-		// inputlength() {
-		// 	return (this.value && this.value.length) || 0;
-		// },
-		// creadonly() {
-		// 	return this.readonly || this.options.readonly;
-		// },
-		// cdisabled() {
-		// 	return this.disabled || this.options.disabled;
-		// },
+		inputlength() {
+			return (this.value && this.value.length) || 0;
+		},
+		creadonly() {
+			return this.readonly || this.safeOptions.readonly;
+		},
+		cdisabled() {
+			return this.disabled || this.safeOptions.disabled;
+		},
 		cplaceholder() {
 			return this.placeholder || this.safeOptions.placeholder;
 		},
@@ -58,9 +49,9 @@ export default {
 		}
 	},
 	methods: {
-		// clear() {
-		// 	this.widgetValue = "";
-		// }
+		clear() {
+			this.widgetValue = "";
+		}
 	},
 	watch: {
 		widgetValue(v) {    //子组件textarea修改往外抛一个修改值
@@ -80,6 +71,9 @@ export default {
 		font-family: 微软雅黑;
 		outline: none;
 		box-sizing: border-box;
+    &.disabled{
+      cursor: not-allowed;
+    }
 	}
   textarea::-webkit-input-placeholder {
     color: #bbbec4;

@@ -1,9 +1,5 @@
 <template>
 	<div>
-		<!--<np-button @click="clear">CLEAR</np-button>-->
-		<!--<np-textarea ref="textarea" v-model="v" :options="options" @change="change"></np-textarea>-->
-		<!--{{v}}-->
-
     <np-textarea ref="textarea" v-model="v" :options="options" @change="change"></np-textarea>
 	</div>
 </template>
@@ -15,7 +11,7 @@ export default {
   },
 	methods: {
 		clear() {
-			// this.$refs.textarea.clear();
+			this.$refs.textarea.clear();
 		},
 		change(v) {
       console.log(v);
@@ -27,9 +23,11 @@ export default {
 			options: {
 			  // placeholder: '请输入内容'
         maxlength: 20,
-				// disabled: true,
-				// rows: 8,
-				// lengthTip: true
+				disabled: false,
+        readonly: false,
+				rows: 8,
+        style: "width:300px",
+				lengthTip: true
 			}
 		};
 	}
