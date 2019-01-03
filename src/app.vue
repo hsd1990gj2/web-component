@@ -32,6 +32,7 @@
     <checkbox-demo></checkbox-demo>
     <select-demo></select-demo>
     <textarea-demo></textarea-demo>
+    <datepicker-demo></datepicker-demo>
   </div>
 </template>
 
@@ -42,6 +43,7 @@
   import checkboxDemo from './components/base/checkbox/demo/demo1.vue'
   import selectDemo from './components/base/select/demo/demo1.vue'
   import textareaDemo from './components/base/textarea/demo/demo1.vue'
+  import datepickerDemo from './components/base/datepicker/demo/demo1.vue'
   // import demoOne from './web-component/src/components/composite/form/demo/demo1.vue'
 
   export default {
@@ -52,7 +54,8 @@
       radioDemo,
       checkboxDemo,
       selectDemo,
-      textareaDemo
+      textareaDemo,
+      datepickerDemo
     }
   }
 </script>

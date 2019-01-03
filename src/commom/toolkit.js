@@ -6,6 +6,20 @@ var toolkit = {
   isObject: function(value) {
       return value !== null && typeof value === "object";
   },
+  formatDate: function(date) {
+    if(typeof date !== "object") {  //不是时间戳，则转换为时间戳
+      date = new Date(date) || new Date();
+    }
+    return date.getFullYear() + '-' + this.formatLenth(date.getMonth() + 1) + '-' + this.formatLenth(date.getDate()) + ' ' + this.formatLenth(date.getHours()) + ':' + this.formatLenth(date.getMinutes()) + ':' + this.formatLenth(date.getSeconds());
+  },
+  formatLenth: function(x, len) {
+    x = '' + x;
+    len = len || 2;
+    while (x.length < len) {
+      x = '0' + x;
+    }
+    return x;
+  },
 };
 export default toolkit;
 
