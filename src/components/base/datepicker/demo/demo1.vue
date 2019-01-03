@@ -18,11 +18,12 @@ export default {
 			options: {
 				// type: "datetime",
 				placeholder: "选择日期",
+        disabled: false,
 				// clearable: true,
 				// format: "yyyy-MM-dd",
 				// valueFormat: "yyyy-MM-dd HH:mm",
 				// clearable: false,
-				// disabled: false,
+
 				// yearRange: [2018, 2037],
 			}
 		};

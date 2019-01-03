@@ -193,8 +193,7 @@ export default {
 	data: function() {
 		return {
 			isOnlyDay: this.type === "date", //是否是显示日期不显示时分秒
-			isShowTime: false,
-			myValue: this.value,
+
 			context: LANG === 0 ? contextsZh : contextsEn,
 			dateValue: new Date().getDate(),
 			calendarYear: new SelectControl(),
@@ -399,23 +398,7 @@ export default {
 			this.calendarMinute.show_dropDown = false;
 			this.calendarSecond.show_dropDown = false;
 		},
-		showView: function() {
-			if (this.disabled) {
-				return;
-			} // 禁用状态
-			var b = this.myValue;
-			if (b) {
-				this.year = b.substring(0, 4) - 0;
-				this.month = b.substring(5, 7) - 1;
-				this.dateValue = b.substring(8, 11) - 0;
-				this.hour = b.substring(11, 13) - 0;
-				this.minute = b.substring(14, 16) - 0;
-				this.second = b.substring(17, 19) - 0;
-			}
-			this.getTime();
-			this.bindData();
-			this.isShowTime = !this.isShowTime;
-		},
+
 		hideCover: function() {
 			this.isShowTime = false;
 			this.calendarYear.show_dropDown = false;
@@ -798,66 +781,14 @@ export default {
 </script>
 <style lang="less">
 .np-date-picker-panel {
-	min-width: 172px;
-	max-width: 100%;
-	height: 28px;
-	display: inline-block;
-	vertical-align: middle;
 
-	.date-input {
-		width: 100%;
-		display: inline-block;
-		border: 1px solid #d1dbe5;
-		height: 28px;
-		background-color: white;
-		&.disabledInput {
-			background-color: #eef1f6;
-			&:hover {
-				border-color: #d1dbe5 !important;
-			}
-		}
-		.disabled-input {
-			background-color: #eef1f6;
-			border: 1px solid #eef1f6;
-			color: #bbb;
-			cursor: not-allowed;
-		}
-	}
+
 	.clearableStyle {
 		margin-left: 35px;
 	}
-	.date-input .date_icon {
-		display: block;
-		float: right;
-		width: 20px;
-		height: 28px;
-		background: url("./datepicker.png") no-repeat;
-		background-position-y: 6px;
-		cursor: pointer;
-	}
-	.time-input {
-		-webkit-appearance: none;
-		background-image: none;
-		width: calc(~"100% - 20px");
-		height: 26px;
-		display: inline-block;
-		border: 1px solid #fff;
-		box-sizing: border-box;
-		color: #333;
-		font-size: 12px;
-		background-color: #fff;
-		line-height: 26px;
-		outline: none;
-		padding: 0 8px;
-		float: left;
-	}
 
-	.date-input.inputactive {
-		border-color: #40a4ff;
-	}
-	.date-input:not(.inputactive):hover {
-		border-color: #8391a5;
-	}
+
+
 	#calendarPanel {
 		position: fixed;
 		z-index: 999;

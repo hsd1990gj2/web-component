@@ -5,16 +5,10 @@
 	<!--</np-date-picker>-->
 
   <div class="xui-datepicker xui-datepicker-style np-date-picker-panel"  ref="dateContainer">
-    <!--<div class="date-input" :class="{-->
-                <!--inputactive : isShowTime,-->
-				<!--'disabledInput':disabled-->
-            <!--}">-->
-      <!--<span class="date_icon" @click="showView()"></span>-->
-      <!--<input :class="{'disabled-input': disabled}"    @click="showView()" readonly="readonly" />-->
-
-      <input type="text" class="time-input" v-model="dateControl" :placeholder="cplaceholder" readonly="readonly"/>
-
-    <!--</div>-->
+    <div :class="['date-input',{'disabled':cdisabled,'active':isShowTime}]">
+      <i class="date_icon iconfont icon-riqi" @click="showView()"></i>
+      <input type="text" :class="['time-input',{'disabled':cdisabled}]" v-model="dateControl" :placeholder="cplaceholder" readonly="readonly" @click="showView()"/>
+    </div>
     <!--<transition name="toggle">-->
       <!--<div id="calendarPanel" v-show="isShowTime" class="calendarPanel">-->
         <!--&lt;!&ndash;<iframe scroll="none" src="about:blank" class="picker-panel__iframe"></iframe>&ndash;&gt;-->
@@ -115,12 +109,13 @@ export default {
 			type: Object
 		},
     placeholder: {},
-		// disabled: {},
+		disabled: {},
 		value: {}
 	},
 	data() {
 		return {
       myValue: this.value,
+      isShowTime: false,
     };
 	},
 	computed: {
@@ -135,7 +130,10 @@ export default {
     },
     cplaceholder(){
       return this.placeholder || this.safeOptions.placeholder;
-    }
+    },
+    cdisabled() {
+      return this.disabled || this.safeOptions.disabled;
+    },
 
 		// widgetValue: {
 		// 	set(v) {
@@ -161,12 +159,8 @@ export default {
 		// 		return data;
 		// 	}
 		// },
-		// safeOptions() {
-		// 	return this.options || {};
-		// },
-		// cdisabled() {
-		// 	return this.disabled || this.safeOptions.disabled;
-		// },
+
+
 		// type() {
 		// 	return this.safeOptions.type || "date";
 		// },
@@ -196,13 +190,31 @@ export default {
 
   },
   watch:{
-    // myValue: function(val) {
-    //   debugger;
-    //   console.log(val);
-    //   // this.myValue = val ? sunSet.Dates.format(new Date(val), this.dateFormat) : "";
-    // },
+    myValue: function(val) {
+      // this.$emit('',val);
+      // console.log(val);
+    },
   },
 	methods: {
+
+    showView: function() {
+      if (this.cdisabled) {
+        return;
+      }
+      // var b = this.myValue;
+      // if (b) {
+      //   this.year = b.substring(0, 4) - 0;
+      //   this.month = b.substring(5, 7) - 1;
+      //   this.dateValue = b.substring(8, 11) - 0;
+      //   this.hour = b.substring(11, 13) - 0;
+      //   this.minute = b.substring(14, 16) - 0;
+      //   this.second = b.substring(17, 19) - 0;
+      // }
+      // this.getTime();
+      // this.bindData();
+      this.isShowTime = !this.isShowTime;
+    },
+
 		// formatDateValue(v) {
 		// 	var value = new Date(v);
 		// 	if (this.valueFormat === "timestamp") {
@@ -223,12 +235,42 @@ export default {
   height: 28px;
   display: inline-block;
   vertical-align: middle;
+  .date-input {
+    width: 100%;
+    display: inline-block;
+    border: 1px solid #d1dbe5;
+    height: 28px;
+    background-color: white;
+    .date_icon {
+      display: block;
+      float: right;
+      text-align: center;
+      font-size: 18px;
+      width: 20px;
+      height: 28px;
+      line-height: 26px;
+      cursor: pointer;
+      color: #409eff;
+    }
+    .disabled,&.disabled {
+      background-color: #eef1f6;
+      border: 1px solid #eef1f6;
+      color: #bbb;
+      cursor: not-allowed;
+    }
+    &:hover{
+      border-color: #8391a5;
+    }
+    &.active {
+      border-color: #40a4ff;
+    }
+  }
   .time-input {
     -webkit-appearance: none;
     background-image: none;
     width: calc(100% - 20px);
-    height: 26px;
-    line-height: 26px;
+    height: 28px;
+    line-height: 28px;
     display: inline-block;
     border: 1px solid #fff;
     box-sizing: border-box;
