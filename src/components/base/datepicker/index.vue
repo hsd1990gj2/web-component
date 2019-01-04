@@ -9,16 +9,16 @@
       <i class="date_icon iconfont icon-riqi" @click="showView()"></i>
       <input type="text" :class="['time-input',{'disabled':cdisabled}]" v-model="dateControl" :placeholder="cplaceholder" readonly="readonly" @click="showView()"/>
     </div>
-    <!--<transition name="toggle">-->
-      <!--<div id="calendarPanel" v-show="isShowTime" class="calendarPanel">-->
+    <transition name="toggle">
+      <div class="calendarPanel" v-show="isShowTime">
         <!--&lt;!&ndash;<iframe scroll="none" src="about:blank" class="picker-panel__iframe"></iframe>&ndash;&gt;-->
-        <!--<div name="calendarForm" style="margin: 0px; position: relative;">-->
-          <!--<table width="100%" border="0" cellpadding="0" cellspacing="1" class="tableHeader">-->
-            <!--<tr>-->
-              <!--<th align="left" width="1%">-->
-                <!--<button type="button" class="el-picker-panel__icon-btn el-date-picker__prev-btn el-icon-arrow-left" id="prevMonth" @click="goPrevMonth()"></button>-->
-              <!--</th>-->
-              <!--<th align="center" width="98%" nowrap="nowrap">-->
+        <div name="calendarForm" style="margin: 0px; position: relative;">
+          <table width="100%" border="0" cellpadding="0" cellspacing="1" class="tableHeader">
+            <tr>
+              <th align="left" width="1%">
+                <button type="button" class="el-picker-panel__icon-btn el-date-picker__prev-btn el-icon-arrow-left" id="prevMonth" @click="goPrevMonth()"></button>
+              </th>
+              <th align="center" width="98%" nowrap="nowrap">
                 <!--<div id="calendarYear" class="select_main">-->
                   <!--<input class="select_text" min="1968" max="2050" v-model="calendarYear.currentValue" readonly="readonly" />-->
                   <!--<div class="select_arrow" :class="{'open_select_arrow':calendarYear.show_dropDown,'select_arrow':!calendarYear.show_dropDown}" @click="calendarYear.taggleDropDown()"></div>-->
@@ -37,15 +37,18 @@
                     <!--</scroll-bar>-->
                   <!--</ul>-->
                 <!--</div>-->
-              <!--</th>-->
-              <!--<th align="right" width="1%">-->
-                <!--<button type="button" aria-label="下个月" id="nextMonth" class="el-picker-panel__icon-btn el-date-picker__next-btn el-icon-arrow-right" @click="goNextMonth()"></button>-->
-              <!--</th>-->
-            <!--</tr>-->
-          <!--</table>-->
-          <!--<table id="calendarTable" width="100%" style="" border="0" cellpadding="3" cellspacing="1" class="calendarTable">-->
-          <!--</table>-->
-        <!--</div>-->
+              </th>
+              <th align="right" width="1%">
+                <button type="button" aria-label="下个月" id="nextMonth" class="el-picker-panel__icon-btn el-date-picker__next-btn el-icon-arrow-right" @click="goNextMonth()"></button>
+              </th>
+            </tr>
+          </table>
+          <table class="calendarTable"  width="100%"  border="0" cellpadding="3" cellspacing="1">
+            <tr>
+              <th class="th-head" v-for="(item,index) in context.weeks" :key="index">{{item}}</th>
+            </tr>
+          </table>
+        </div>
         <!--<div v-if="!isOnlyDay" class="select_container">-->
 					<!--<span style="float:left">-->
 						<!--</i>时 间 :</span>-->
@@ -84,8 +87,8 @@
           <!--<datepicker-button @click="currentTime" color="info" size="mini"  :class="{clearableStyle:!clearable}">{{context.current}}</datepicker-button>-->
           <!--<datepicker-button @click="confirmTime" color="primary" size="mini" class="blue">{{context.confirm}}</datepicker-button>-->
         <!--</div>-->
-      <!--</div>-->
-    <!--</transition>-->
+      </div>
+    </transition>
     <!--<div class="datePickerCover" v-if="isShowTime" @click="hideCover"></div>-->
   </div>
 
@@ -116,6 +119,15 @@ export default {
 		return {
       myValue: this.value,
       isShowTime: false,
+      context : {
+        year: [""],
+        months: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+        weeks: ["日", "一", "二", "三", "四", "五", "六"],
+        abort: "时间",
+        clear: "清空",
+        current: "当前",
+        confirm: "确定"
+      }
     };
 	},
 	computed: {
@@ -185,6 +197,25 @@ export default {
 	},
   mounted(){
 
+
+
+
+    // this.container = this.$el;  //this.$el就是当前vue实例
+    // this.panel = this.container.getElementsByClassName("calendarPanel")[0];
+    // var mvAry = [];
+    // mvAry[mvAry.length] = " <tr>";
+    // for (var i = 0; i < 7; i++) {
+    //   mvAry[mvAry.length] = ' <th class = "th_head">' + context["weeks"][i] + "</th>";
+    // }
+    // mvAry[mvAry.length] = " </tr>";
+    // for (var i = 0; i < 6; i++) {
+    //   mvAry[mvAry.length] = ' <tr align="center">';
+    //   for (var j = 0; j < 7; j++) {
+    //     mvAry[mvAry.length] = " <td ><span></span></td>";
+    //   }
+    //   mvAry[mvAry.length] = " </tr>";
+    // }
+    // this.container.getElementsByClassName("calendarTable")[0].innerHTML = mvAry.join("");
   },
   created(){
 
@@ -241,6 +272,22 @@ export default {
     border: 1px solid #d1dbe5;
     height: 28px;
     background-color: white;
+    .time-input {
+      -webkit-appearance: none;
+      background-image: none;
+      width: calc(100% - 20px);
+      height: 28px;
+      line-height: 28px;
+      display: inline-block;
+      border: 1px solid #fff;
+      box-sizing: border-box;
+      color: #333;
+      font-size: 12px;
+      background-color: #fff;
+      outline: none;
+      padding: 0 8px;
+      float: left;
+    }
     .date_icon {
       display: block;
       float: right;
@@ -265,21 +312,39 @@ export default {
       border-color: #40a4ff;
     }
   }
-  .time-input {
-    -webkit-appearance: none;
-    background-image: none;
-    width: calc(100% - 20px);
-    height: 28px;
-    line-height: 28px;
-    display: inline-block;
-    border: 1px solid #fff;
-    box-sizing: border-box;
-    color: #333;
-    font-size: 12px;
+  .toggle-enter,.toggle-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  .toggle-enter-active,.toggle-leave-active {
+    transition: all ease 0.2s;
+  }
+  .calendarPanel {
+    position: fixed;
+    z-index: 999;
     background-color: #fff;
-    outline: none;
-    padding: 0 8px;
-    float: left;
+    border: 1px solid #ccc;
+    width: 320px;
+    font-size: 12px;
+    border-radius: 5px;
+    line-height: 30px;
+    min-height: 30px;
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.1);
+  }
+  .tableHeader {
+    padding: 18px 14px 5px 14px;
+    border-collapse: separate;
+    border-spacing: inherit;
+  }
+  .calendarTable {
+    padding: 0 15px;
+    border-collapse: separate;
+    border-spacing: inherit;
+  }
+  .th-head {
+    padding: 5px;
+    border-bottom: 1px solid #ebeef5;
+    color: #606266;
   }
 
 /*	.calendarPanel .select_main .select_dropDown {

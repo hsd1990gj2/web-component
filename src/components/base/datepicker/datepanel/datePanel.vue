@@ -257,8 +257,8 @@ export default {
 		}
 	},
 	mounted: function() {
-		this.container = this.$el;
-		this.panel = this.container.getElementsByClassName("calendarPanel")[0];
+		// this.container = this.$el;
+		// this.panel = this.container.getElementsByClassName("calendarPanel")[0];
 		var mvAry = [];
 		mvAry[mvAry.length] = " <tr>";
 		for (var i = 0; i < 7; i++) {
@@ -789,17 +789,7 @@ export default {
 
 
 
-	#calendarPanel {
-		position: fixed;
-		z-index: 999;
-		background-color: #fff;
-		border: 1px solid #ccc;
-		width: 320px;
-		font-size: 12px;
-		border-radius: 5px;
-		line-height: 30px;
-		box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.1);
-	}
+
 	#calendarYear {
 		width: 70px;
 	}
@@ -807,21 +797,9 @@ export default {
 		width: 55px;
 		margin-left: 10px;
 	}
-	.tableHeader {
-		padding: 18px 14px 5px 14px;
-		border-collapse: separate;
-		border-spacing: inherit;
-	}
-	.th_head {
-		padding: 5px;
-		border-bottom: 1px solid #ebeef5;
-		color: #606266;
-	}
-	#calendarTable {
-		padding: 0 15px;
-		border-collapse: separate;
-		border-spacing: inherit;
-	}
+
+
+
 	#calendarTable tr td {
 		width: 27px;
 		height: 27px;
@@ -1044,15 +1022,7 @@ export default {
 		color: #c0c4cc;
 	}
 }
-.toggle-enter,
-.toggle-leave-active {
-	opacity: 0;
-	transform: translateY(-10px);
-}
-.toggle-enter-active,
-.toggle-leave-active {
-	transition: all ease 0.2s;
-}
+
 .picker-panel__iframe {
 	position: absolute;
 	top: 0;
