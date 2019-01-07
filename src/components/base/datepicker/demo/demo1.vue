@@ -19,12 +19,13 @@ export default {
 				// type: "datetime",
 				placeholder: "选择日期",
         disabled: false,
+        yearRange: [2018, 2020],
 				// clearable: true,
 				// format: "yyyy-MM-dd",
 				// valueFormat: "yyyy-MM-dd HH:mm",
 				// clearable: false,
 
-				// yearRange: [2018, 2037],
+
 			}
 		};
 	},

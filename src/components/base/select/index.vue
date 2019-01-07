@@ -146,6 +146,7 @@ export default {
 	},
 	methods: {
 		init() {
+		  this.widgetValue = this.value?this.value:undefined;
       this.items = this.options.data;
 			this.$nextTick(() => {
 				// Utils.generateItems(this.options).then(items => {
@@ -222,7 +223,7 @@ export default {
 			}
 		},
 		getItemByValue(v) {
-			var items = this.items.filter(item => item.value === v);
+			var items = this.items.filter(item => item.value == v);
 			return items.length ? items[0] : null;
 		},
 		selectItem(value, item) {
@@ -268,7 +269,15 @@ export default {
 		// this.$watch("options.enum", function() {
 		// 	this.init();
 		// });
-	}
+	},
+	watch:{
+    widgetValue(){
+      this.$emit("input",this.widgetValue);
+    },
+    value(){
+      this.widgetValue = this.value
+    }
+  }
 };
 </script>
 

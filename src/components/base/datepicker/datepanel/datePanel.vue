@@ -139,18 +139,7 @@ Date.prototype.toFormat = function(style) {
 var beginYear, endYear;
 var isFocus = false;
 
-function SelectControl() {
-	this.show_dropDown = false;
-	this.options = [];
-	this.currentValue = "";
-}
-SelectControl.prototype.optionClick = function(sel) {
-	if (sel.isDisabled) {
-		return;
-	}
-	this.currentValue = sel.value ? sel.value : sel;
-	this.show_dropDown = false;
-};
+
 
 var timeLabel = function(timeNum) {
 	return parseInt(timeNum) < 10 ? "0" + parseInt(timeNum) : "" + timeNum;
@@ -183,12 +172,7 @@ export default {
 		},
 		value: { default: "" },
 		startTimeValue: { type: Number },
-		yearRange: {
-			type: Array,
-			default() {
-				return [new Date().getFullYear() - 20, new Date().getFullYear() + 20];
-			}
-		}
+
 	},
 	data: function() {
 		return {
@@ -196,8 +180,7 @@ export default {
 
 			context: LANG === 0 ? contextsZh : contextsEn,
 			dateValue: new Date().getDate(),
-			calendarYear: new SelectControl(),
-			calendarMonth: new SelectControl(),
+
 			calendarHour: new SelectControl(),
 			calendarMinute: new SelectControl(),
 			calendarSecond: new SelectControl()
@@ -279,7 +262,7 @@ export default {
 		endYear = this.yearRange[1];
 		this.date = new Date();
 		this.year = this.date.getFullYear();
-		this.month = this.date.getMonth();
+
 		this.hour = this.date.getHours();
 		this.minute = this.date.getMinutes();
 		this.second = this.date.getSeconds();
@@ -296,18 +279,7 @@ export default {
 		for (var i = beginYear; i <= endYear; i++) {
 			this.calendarYear.options.unshift(i); //年份倒排 否则最近的年份放最下面不方便
 		}
-		for (var i = 0; i < 60; i++) {
-			if (i < 12) {
-				this.calendarMonth.options.push(this.context.months[i]);
-			}
-			if (i < 24 && !this.isOnlyDay) {
-				this.calendarHour.options.push({ value: i < 10 ? "0" + i : i, isDisabled: false });
-			}
-			if (!this.isOnlyDay) {
-				this.calendarMinute.options.push({ value: i < 10 ? "0" + i : i, isDisabled: false });
-				this.calendarSecond.options.push({ value: i < 10 ? "0" + i : i, isDisabled: false });
-			}
-		}
+
 		this.getTime();
 		this.initShowDropDown();
 		this.calendarYear.taggleDropDown = function() {
@@ -690,38 +662,8 @@ export default {
 			}
 			return mvArray;
 		},
-		goPrevMonth: function(clickVal) {
-			this.getShowValue();
-			if (this.year === beginYear && this.month === 0) {
-				return;
-			}
-			this.month--;
-			if (this.month === -1) {
-				this.year--;
-				this.calendarYear.currentValue = this.year;
-				this.month = 11;
-			}
-			this.calendarMonth.currentValue = this.context.months[this.month];
-			this.dateValue = clickVal ? clickVal : 1;
-			this.date = new Date(this.year, this.month, this.dateValue, this.hour, this.minute, this.second);
-			this.bindData();
-		},
-		goNextMonth: function(clickVal) {
-			this.getShowValue();
-			if (this.year === endYear && this.month === 11) {
-				return;
-			}
-			this.month++;
-			if (this.month === 12) {
-				this.year++;
-				this.calendarYear.currentValue = this.year;
-				this.month = 0;
-			}
-			this.calendarMonth.currentValue = this.context.months[this.month];
-			this.dateValue = clickVal ? clickVal : 1;
-			this.date = new Date(this.year, this.month, this.dateValue, this.hour, this.minute, this.second);
-			this.bindData();
-		},
+
+
 		clearTime: function() {
 			this.myValue = "";
 			this.isShowTime = false;
@@ -790,13 +732,7 @@ export default {
 
 
 
-	#calendarYear {
-		width: 70px;
-	}
-	#calendarMonth {
-		width: 55px;
-		margin-left: 10px;
-	}
+
 
 
 
@@ -848,14 +784,7 @@ export default {
 		line-height: 27px;
 		margin-left: 25px;
 	}
-	.select_main {
-		display: inline-block;
-		height: 26px;
-		position: relative;
-		width: 100%;
-		float: left;
-		margin-left: 50px;
-	}
+
 	.date_picker_bottom {
 		position: relative;
 		height: 45px;
@@ -880,50 +809,12 @@ export default {
 	.date_picker_bottom .el-button.gray:hover {
 		opacity: 0.8;
 	}
-	.select_main .select_text {
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
-		float: right;
-		margin: 0px;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		width: 100%;
-		height: 26px;
-		line-height: 25px;
-		text-indent: 10px;
-		box-sizing: border-box;
-		border: #ddd 1px solid;
-		&:hover {
-			border-color: #aaa;
-		}
-	}
+
 	input.select_text::-webkit-outer-spin-button,
 	input.select_text::-webkit-inner-spin-button {
 		appearance: none !important;
 	}
-	.select_main .select_dropDown {
-		position: absolute;
-		z-index: 1;
-		top: 100%;
-		left: 0;
-		width: 100%;
-		max-height: 300px;
-		margin: 0;
-		padding: 0;
-		overflow-y: auto;
-		background: #fff;
-		border: 1px solid #ccc;
-		box-shadow: 6px 6px 0px rgba(34, 34, 34, 0.1);
-		transition-property: top;
-		transition-duration: 0.3s;
-		-moz-transition-property: top;
-		-moz-transition-duration: 0.3s;
-		-webkit-transition-property: top;
-		-webkit-transition-duration: 0.3s;
-		-o-transition-property: top;
-		-o-transition-duration: 0.3s;
-	}
+
 	.select_main .select_dropDown.specialPosition {
 		top: -300px;
 		box-shadow: none;
@@ -954,42 +845,8 @@ export default {
 		font-weight: 700;
 	}
 
-	.select_main .select_arrow {
-		position: absolute;
-		top: 0;
-		right: 0;
-		height: 26px;
-		cursor: pointer;
-		text-align: center;
-		font-size: 14px;
-		width: 20px;
-		font-size: 12px;
-		color: #999;
-	}
-	.select_main .select_arrow:hover:before {
-		border-top-color: #999;
-	}
-	.select_main .select_arrow:before {
-		content: " ";
-		border-left: 5px solid transparent;
-		border-right: 5px solid transparent;
-		border-top: 5px solid #cccccc;
-		display: block;
-		width: 0;
-		height: 0;
-		top: 0;
-		right: 5px;
-		bottom: 0;
-		position: absolute;
-		margin: auto 0;
-	}
-	.select_main .open_select_arrow {
-		border-color: #51a7e8;
-	}
-	.select_main .open_select_arrow:before {
-		border-top: none;
-		border-bottom: 5px solid #cccccc;
-	}
+
+
 	.datePickerCover {
 		position: fixed;
 		top: 0;

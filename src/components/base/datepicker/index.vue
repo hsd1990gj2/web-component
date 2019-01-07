@@ -16,10 +16,12 @@
           <table width="100%" border="0" cellpadding="0" cellspacing="1" class="tableHeader">
             <tr>
               <th align="left" width="1%">
-                <button type="button" class="el-picker-panel__icon-btn el-date-picker__prev-btn el-icon-arrow-left" id="prevMonth" @click="goPrevMonth()"></button>
+                <i class="iconfont icon-com-left" @click="goPrevMonth()"></i>
               </th>
               <th align="center" width="98%" nowrap="nowrap">
-                <!--<div id="calendarYear" class="select_main">-->
+                <div id="calendarYear">
+                  <np-select v-model="year" :options="yearOptions"></np-select>
+
                   <!--<input class="select_text" min="1968" max="2050" v-model="calendarYear.currentValue" readonly="readonly" />-->
                   <!--<div class="select_arrow" :class="{'open_select_arrow':calendarYear.show_dropDown,'select_arrow':!calendarYear.show_dropDown}" @click="calendarYear.taggleDropDown()"></div>-->
                   <!--<ul class="select_dropDown" v-if="calendarYear.show_dropDown">-->
@@ -27,19 +29,22 @@
                       <!--<li v-for="sel in calendarYear.options" :class="{option_selected:calendarYear.currentValue==sel}" :data-value="sel" @click="clickOption('calendarYear',sel)">{{sel}}</li>-->
                     <!--</scroll-bar>-->
                   <!--</ul>-->
-                <!--</div>-->
-                <!--<div id="calendarMonth" class="select_main">-->
-                  <!--<input min="1" max="12" class="select_text" v-model="calendarMonth.currentValue" readonly="readonly" />-->
-                  <!--<div class="select_arrow" :class="{'open_select_arrow':calendarMonth.show_dropDown,'select_arrow':!calendarMonth.show_dropDown}" @click="calendarMonth.taggleDropDown()"></div>-->
-                  <!--<ul class="select_dropDown" v-if="calendarMonth.show_dropDown">-->
-                    <!--<scroll-bar>-->
-                      <!--<li v-for="sel in calendarMonth.options" :class="{option_selected:calendarYear.currentValue==sel}" :data-value="sel" @click="clickOption('calendarMonth',sel)">{{sel}}</li>-->
-                    <!--</scroll-bar>-->
+                </div>
+                <div id="calendarMonth">
+                  <np-select v-model="month" :options="monthOptions"></np-select>
+
+                  <!--<input class="select-text" v-model="calendarMonth.currentValue" readonly="readonly" />-->
+                  <!--<div class="select-arrow" :class="{'open-select-arrow':calendarMonth.show,'select-arrow':!calendarMonth.show}"  @click="taggleDropDown"></div>-->
+                  <!--<ul class="select-dropDown" v-if="calendarMonth.show">-->
+                    <!--&lt;!&ndash;<scroll-bar>&ndash;&gt;-->
+                      <!--&lt;!&ndash;<li :class="{option_selected:calendarYear.currentValue==sel}" :data-value="sel" >{{sel}}</li>&ndash;&gt;-->
+                      <!--<li v-for="month in calendarMonth.options" @click="clickOption(month)">{{month}}</li>-->
+                    <!--&lt;!&ndash;</scroll-bar>&ndash;&gt;-->
                   <!--</ul>-->
-                <!--</div>-->
+                </div>
               </th>
               <th align="right" width="1%">
-                <button type="button" aria-label="下个月" id="nextMonth" class="el-picker-panel__icon-btn el-date-picker__next-btn el-icon-arrow-right" @click="goNextMonth()"></button>
+                <i class="iconfont icon-com-right" @click="goNextMonth()"></i>
               </th>
             </tr>
           </table>
@@ -47,6 +52,7 @@
             <tr>
               <th class="th-head" v-for="(item,index) in context.weeks" :key="index">{{item}}</th>
             </tr>
+            <tr v-for="(item,index) in context.weeks.slice(0,6)" :key="index"></tr>
           </table>
         </div>
         <!--<div v-if="!isOnlyDay" class="select_container">-->
@@ -98,22 +104,42 @@
 // import npDatePicker from "./np_datePicker/datePicker";
 // import Sunset from "../../../common/sunset";
 
+// function SelectControl() {
+//   this.show_dropDown = false;
+//   this.options = [];
+//   this.currentValue = "";
+// }
 
+// SelectControl.prototype.optionClick = function(sel) {
+//   if (sel.isDisabled) {
+//     return;
+//   }
+//   this.currentValue = sel.value ? sel.value : sel;
+//   this.show_dropDown = false;
+// };
+import npSelect from '../select/index.vue'
 export default {
 	model: {
 		prop: "value",
 		event: "input"
 	},
 	components: {
+    npSelect
 		// npDatePicker: npDatePicker
 	},
 	props: {
 		options: {
-			type: Object
+			type: Object,
+      yearRange: {
+        type: Array,
+        default() {
+          return [new Date().getFullYear() - 20, new Date().getFullYear() + 20];
+        }
+      }
 		},
     placeholder: {},
 		disabled: {},
-		value: {}
+		value: {},
 	},
 	data() {
 		return {
@@ -121,15 +147,108 @@ export default {
       isShowTime: false,
       context : {
         year: [""],
-        months: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
         weeks: ["日", "一", "二", "三", "四", "五", "六"],
         abort: "时间",
         clear: "清空",
         current: "当前",
         confirm: "确定"
+      },
+      year: new Date().getFullYear(),
+      yearOptions:{
+        width: 70,
+        data:[]
+      },
+      month:  new Date().getMonth()+1,
+      monthOptions:{
+        width: 55,
+        data:[]
+      },
+
+
+      // calendarYear: new SelectControl(),
+      calendarMonth: {
+        options : [],
+        currentValue: "",
+        show : false,
       }
     };
 	},
+  methods: {
+
+    showView: function() {
+      if (this.cdisabled) {
+        return;
+      }
+      // var b = this.myValue;
+      // if (b) {
+      //   this.year = b.substring(0, 4) - 0;
+      //   this.month = b.substring(5, 7) - 1;
+      //   this.dateValue = b.substring(8, 11) - 0;
+      //   this.hour = b.substring(11, 13) - 0;
+      //   this.minute = b.substring(14, 16) - 0;
+      //   this.second = b.substring(17, 19) - 0;
+      // }
+      // this.getTime();
+      // this.bindData();
+      this.isShowTime = !this.isShowTime;
+    },
+    currentTime: function() {
+      this.date = new Date();
+      // this.hour = this.date.getHours();
+      // this.minute = this.date.getMinutes();
+      // this.second = this.date.getSeconds();
+      // this.dateValue = this.date.getDate();
+      // this.calendarYear.currentValue = this.year;
+      // this.bindData();
+      // this.confirmTime(true);
+    },
+    taggleDropDown(){
+      this.calendarMonth.show = !this.calendarMonth.show;
+    },
+    clickOption(value){
+      this.calendarMonth.currentValue = value;
+      this.calendarMonth.show = false;
+    },
+    goPrevMonth: function(clickVal) {
+      // this.getShowValue();
+      if (this.year === this.options.yearRange[0] && this.month == 1) {
+        return;
+      }
+      this.month--;
+      if (this.month < 1) {
+        this.year--;
+        this.month = 12;
+      }
+      // this.dateValue = clickVal ? clickVal : 1;
+      // this.date = new Date(this.year, this.month, this.dateValue, this.hour, this.minute, this.second);
+      // this.bindData();
+    },
+    goNextMonth() {
+      // this.getShowValue();
+      if (this.year == this.options.yearRange[1] && this.month == 12) {
+        return;
+      }
+      this.month++;
+      if (this.month > 12) {
+        this.year++;
+        this.month = 1;
+      }
+      // this.dateValue = clickVal ? clickVal : 1;
+      // this.date = new Date(this.year, this.month, this.dateValue, this.hour, this.minute, this.second);
+      // this.bindData();
+    },
+
+    // formatDateValue(v) {
+    // 	var value = new Date(v);
+    // 	if (this.valueFormat === "timestamp") {
+    // 		return value.getTime();
+    // 	} else if (Sunset.isString(this.valueFormat)) {
+    // 		return Sunset.Dates.format(value, this.valueFormat);
+    // 	} else {
+    // 		return value;
+    // 	}
+    // }
+  },
 	computed: {
 
     safeOptions(){
@@ -218,6 +337,36 @@ export default {
     // this.container.getElementsByClassName("calendarTable")[0].innerHTML = mvAry.join("");
   },
   created(){
+    // this.month = this.date.getMonth();
+    // this.currentTime();
+    for(var i = this.options.yearRange[0]; i<=this.options.yearRange[1]; i++){
+      this.yearOptions.data.push({
+        text: i,
+        value: i
+      })
+    }
+    for(var i = 1; i<=12; i++){
+      this.monthOptions.data.push({
+        text: i,
+        value: i
+      })
+    }
+
+
+
+    // for (var i = 0; i < 60; i++) {
+    //   if (i < 12) {
+    //     this.calendarMonth.options.push(this.context.months[i]);
+    //   }
+    //   if (i < 24 && !this.isOnlyDay) {
+    //     this.calendarHour.options.push({ value: i < 10 ? "0" + i : i, isDisabled: false });
+    //   }
+    //   if (!this.isOnlyDay) {
+    //     this.calendarMinute.options.push({ value: i < 10 ? "0" + i : i, isDisabled: false });
+    //     this.calendarSecond.options.push({ value: i < 10 ? "0" + i : i, isDisabled: false });
+    //   }
+    // }
+
 
   },
   watch:{
@@ -225,38 +374,7 @@ export default {
       // this.$emit('',val);
       // console.log(val);
     },
-  },
-	methods: {
-
-    showView: function() {
-      if (this.cdisabled) {
-        return;
-      }
-      // var b = this.myValue;
-      // if (b) {
-      //   this.year = b.substring(0, 4) - 0;
-      //   this.month = b.substring(5, 7) - 1;
-      //   this.dateValue = b.substring(8, 11) - 0;
-      //   this.hour = b.substring(11, 13) - 0;
-      //   this.minute = b.substring(14, 16) - 0;
-      //   this.second = b.substring(17, 19) - 0;
-      // }
-      // this.getTime();
-      // this.bindData();
-      this.isShowTime = !this.isShowTime;
-    },
-
-		// formatDateValue(v) {
-		// 	var value = new Date(v);
-		// 	if (this.valueFormat === "timestamp") {
-		// 		return value.getTime();
-		// 	} else if (Sunset.isString(this.valueFormat)) {
-		// 		return Sunset.Dates.format(value, this.valueFormat);
-		// 	} else {
-		// 		return value;
-		// 	}
-		// }
-	}
+  }
 };
 </script>
 <style lang="scss">
@@ -330,22 +448,112 @@ export default {
     line-height: 30px;
     min-height: 30px;
     box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.1);
+    .tableHeader {
+      padding: 18px 14px 5px 14px;
+      border-collapse: separate;
+      border-spacing: inherit;
+      th{
+        font-weight: normal;
+        line-height: 0;
+      }
+      .icon-com-left,.icon-com-right{
+        font-size: 12px;
+        color: #303133;
+        cursor: pointer;
+      }
+      #calendarYear {
+        width: 70px;
+        display: inline-block;
+        padding: 0 5px;
+
+      }
+      #calendarMonth {
+        width: 55px;
+        display: inline-block;
+        padding: 0 5px;
+      }
+    }
+    .calendarTable {
+      padding: 0 15px;
+      border-collapse: separate;
+      border-spacing: inherit;
+      .th-head {
+        padding: 5px;
+        border-bottom: 1px solid #ebeef5;
+        color: #606266;
+      }
+    }
   }
-  .tableHeader {
-    padding: 18px 14px 5px 14px;
-    border-collapse: separate;
-    border-spacing: inherit;
+  .xui-select-style{
+    font-weight: normal;
   }
-  .calendarTable {
-    padding: 0 15px;
-    border-collapse: separate;
-    border-spacing: inherit;
-  }
-  .th-head {
-    padding: 5px;
-    border-bottom: 1px solid #ebeef5;
-    color: #606266;
-  }
+/*  .select-main {
+    display: inline-block;
+    position: relative;
+    height: 26px;
+    float: left;
+    margin-left: 50px;
+    .select-text {
+      width: 100%;
+      height: 26px;
+      line-height: 26px;
+      text-indent: 10px;
+      box-sizing: border-box;
+      border: #ddd 1px solid;
+      &:hover {
+        border-color: #aaa;
+      }
+    }
+    .select-arrow {
+      position: absolute;
+      top: 2px;
+      right: 0;
+      height: 24px;
+      cursor: pointer;
+      text-align: center;
+      width: 20px;
+      color: #999;
+    }
+    .select-arrow:before {
+      content: " ";
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #cccccc;
+      display: block;
+      width: 0;
+      height: 0;
+      top: 0;
+      right: 5px;
+      bottom: 0;
+      position: absolute;
+      margin: auto 0;
+    }
+    .select-arrow:hover:before {
+      border-top-color: #999;
+    }
+    .open-select-arrow {
+      border-color: #51a7e8;
+    }
+    .open-select-arrow:before {
+      border-top: none;
+      border-bottom: 5px solid #cccccc;
+    }
+    .select-dropDown {
+      position: absolute;
+      z-index: 1;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      max-height: 300px;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 6px 6px 0px rgba(34, 34, 34, 0.1);
+      transition: top 0.3s;
+    }
+  }*/
 
 /*	.calendarPanel .select_main .select_dropDown {
 		overflow: hidden;
