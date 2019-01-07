@@ -52,7 +52,9 @@
             <tr>
               <th class="th-head" v-for="(item,index) in context.weeks" :key="index">{{item}}</th>
             </tr>
-            <tr v-for="(item,index) in context.weeks.slice(0,6)" :key="index"></tr>
+            <tr v-for="(item,index) in rows" :key="index">
+              <td v-for="(item,index) in cols"></td>
+            </tr>
           </table>
         </div>
         <!--<div v-if="!isOnlyDay" class="select_container">-->
@@ -153,6 +155,8 @@ export default {
         current: "当前",
         confirm: "确定"
       },
+      rows:[1,2,3,4,5,6],
+      cols:[1,2,3,4,5,6,7],
       year: new Date().getFullYear(),
       yearOptions:{
         width: 70,
@@ -317,7 +321,7 @@ export default {
   mounted(){
 
 
-
+    var _firstDay = new Date(this.year, this.month, 1);  // 当前月第一天
 
     // this.container = this.$el;  //this.$el就是当前vue实例
     // this.panel = this.container.getElementsByClassName("calendarPanel")[0];
