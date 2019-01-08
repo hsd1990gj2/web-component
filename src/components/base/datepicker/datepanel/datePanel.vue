@@ -736,27 +736,9 @@ export default {
 
 
 
-	#calendarTable tr td {
-		width: 27px;
-		height: 27px;
-		box-sizing: border-box;
-		text-align: center;
-		cursor: pointer;
-		position: relative;
-		padding: 4px 0 4px 10px;
-	}
-	#calendarTable tr td span {
-		font-size: 12px;
-		display: block;
-		width: 27px;
-		height: 27px;
-		line-height: 27px;
-		border-radius: 50%;
-	}
-	#calendarTable .preMonth,
-	.nextMonth {
-		color: #c0c4cc;
-	}
+
+
+
 	#calendarTable tr:nth-child(2) {
 		margin-top: 15px;
 	}
@@ -862,10 +844,7 @@ export default {
 	.date-normal:not(.date-normal-checked, .date-disabled):hover {
 		color: #40a4ff !important;
 	}
-	.date-normal-checked {
-		color: #fff;
-		background-color: #40a4ff;
-	}
+
 	.date-pre-month,
 	.date-next-month,
 	.date-disabled {

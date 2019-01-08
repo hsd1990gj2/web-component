@@ -53,7 +53,7 @@
               <th class="th-head" v-for="(item,index) in context.weeks" :key="index">{{item}}</th>
             </tr>
             <tr v-for="(item,index) in rows" :key="index">
-              <td v-for="(item,index) in cols"></td>
+              <td v-for="(item,index) in cols"><span></span></td>
             </tr>
           </table>
         </div>
@@ -223,6 +223,7 @@ export default {
         this.year--;
         this.month = 12;
       }
+      this.getMonthViewArray();
       // this.dateValue = clickVal ? clickVal : 1;
       // this.date = new Date(this.year, this.month, this.dateValue, this.hour, this.minute, this.second);
       // this.bindData();
@@ -237,9 +238,47 @@ export default {
         this.year++;
         this.month = 1;
       }
+      this.getMonthViewArray();
       // this.dateValue = clickVal ? clickVal : 1;
       // this.date = new Date(this.year, this.month, this.dateValue, this.hour, this.minute, this.second);
       // this.bindData();
+    },
+    getMonthViewArray: function(year, month) {
+      //获取日历数据
+      var mvArray = [];
+      var cont = 1;
+      var firstDay = new Date(this.year, this.month-1, 1).getDay();  // 获取当前月第一天是周几,以此为基准进行前后推算，因为周的标题是不变的
+      var preMonthDay = new Date(this.year, this.month-1, 0).getDate();  //获取上个月的最后一天是多少号，因为要往前推算
+      var endMonthDay = new Date(this.year, this.month , 0).getDate();  //获取当前月的最后一天是多少号，因为要往后推算
+      for (var i = firstDay - 1; i >= 0; --i) {
+        mvArray[i] = {
+          value: preMonthDay,
+          type: "preMonth"
+        };
+        --preMonthDay;
+      }
+      for (var i = 0; i < endMonthDay; i++) {
+        mvArray[i + firstDay] = {
+          value: i + 1,
+          type: "currentMonth"
+        };
+      }
+      for (var i = mvArray.length; i < 42; i++) {
+        mvArray[i] = {
+          value: cont,
+          type: "nextMonth"
+        };
+        cont++;
+      }
+      // 渲染日历视图
+      var dayTds = document.getElementsByClassName("calendarTable")[0].getElementsByTagName("span");
+      for(var i = 0; i<dayTds.length; i++){
+        dayTds[i].innerHTML = mvArray[i].value;
+        dayTds[i].setAttribute("class",mvArray[i].type);
+        if(new Date().getDate() == mvArray[i].value && i<32){
+          dayTds[i].className = 'date-normal-checked'
+        }
+      }
     },
 
     // formatDateValue(v) {
@@ -319,26 +358,8 @@ export default {
 		// }
 	},
   mounted(){
+	  var mvArray = this.getMonthViewArray();
 
-
-    var _firstDay = new Date(this.year, this.month, 1);  // 当前月第一天
-
-    // this.container = this.$el;  //this.$el就是当前vue实例
-    // this.panel = this.container.getElementsByClassName("calendarPanel")[0];
-    // var mvAry = [];
-    // mvAry[mvAry.length] = " <tr>";
-    // for (var i = 0; i < 7; i++) {
-    //   mvAry[mvAry.length] = ' <th class = "th_head">' + context["weeks"][i] + "</th>";
-    // }
-    // mvAry[mvAry.length] = " </tr>";
-    // for (var i = 0; i < 6; i++) {
-    //   mvAry[mvAry.length] = ' <tr align="center">';
-    //   for (var j = 0; j < 7; j++) {
-    //     mvAry[mvAry.length] = " <td ><span></span></td>";
-    //   }
-    //   mvAry[mvAry.length] = " </tr>";
-    // }
-    // this.container.getElementsByClassName("calendarTable")[0].innerHTML = mvAry.join("");
   },
   created(){
     // this.month = this.date.getMonth();
@@ -485,6 +506,24 @@ export default {
         padding: 5px;
         border-bottom: 1px solid #ebeef5;
         color: #606266;
+      }
+      tr td {
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+        padding: 5px;
+        span {
+          font-size: 12px;
+          display: block;
+          border-radius: 50%;
+        }
+        .preMonth,.nextMonth{
+          color: #c0c4cc;
+        }
+        .date-normal-checked {
+          color: #fff;
+          background-color: #40a4ff;
+        }
       }
     }
   }
